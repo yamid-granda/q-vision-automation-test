@@ -1,10 +1,8 @@
-# E2E Tests
+# Q-Vision Automation Test
 
-End-to-end testing scaffold with **Playwright** + **TypeScript**.
+Yamid Granda proposal for automation test vacancy
 
-Commit messages are linted with [**commitlint**](https://commitlint.js.org/) and must follow [**Conventional Commits**](https://www.conventionalcommits.org/en/v1.0.0/). The check is mandatory — it runs on every commit via a husky hook and again in CI.
-
-## Requirements
+## Requirements</path>
 
 - Node.js 18 or higher
 - pnpm
@@ -69,6 +67,8 @@ Running 1 test using 1 worker
 ```
 
 ## Commit messages
+
+Commit messages are linted with [**commitlint**](https://commitlint.js.org/) and must follow [**Conventional Commits**](https://www.conventionalcommits.org/en/v1.0.0/). The check is mandatory — it runs on every commit via a husky hook and again in CI.
 
 Format:
 
