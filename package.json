@@ -12,8 +12,7 @@
     "test:headed": "playwright test --headed",
     "test:ui": "playwright test --ui",
     "test:report": "playwright show-report",
-    "typecheck": "tsc --noEmit",
-    "prepare": "husky"
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.3",
