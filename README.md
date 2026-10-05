@@ -149,5 +149,11 @@ test('my new test', async ({ page }) => {
 Run only that file:
 
 ```bash
-pnpm exec playwright test tests/my-new-test.spec.ts
+pnpm run test tests/register.spec.ts
+```
+
+Run only that file with a visible browser:
+
+```bash
+pnpm run test:headed tests/register.spec.ts
 ```
