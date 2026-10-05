@@ -40,4 +40,31 @@ test('register a new account', async ({ page }) => {
 
   // On success the site redirects to the account dashboard greeting the user.
   await expect(page.getByRole('heading', { name: /hola, e2e/i })).toBeVisible();
+
+  // The account menu renders the "edit-account" link three times (desktop
+  // dropdown, mobile dropdown and the tab bar); only the tab bar one is visible.
+  await page.locator('a[href$="edit-account/"]:visible').click();
+
+  await expect(page).toHaveURL(/\/mi-cuenta\/edit-account\//);
+
+  // "Datos Personales" shows values as static text until edit mode is turned on.
+  const profileForm = page.locator('#profile-update-form');
+  await expect(profileForm.locator('[data-field="first_name"]')).toHaveText('E2E');
+
+  // The toggle is wired up by a deferred theme script, so a click can land
+  // before the handler is bound. Retry until the section flips to inputs.
+  const firstNameInput = getByName(profileForm, 'first_name');
+  await expect(async () => {
+    await profileForm.locator('.update-info-btn:visible').click();
+    await expect(firstNameInput).toBeEditable();
+  }).toPass();
+
+  await firstNameInput.fill('E2E Updated');
+  await getByName(profileForm, 'last_name').fill('Test Updated');
+
+  await profileForm.locator('.save-info-btn:visible').click();
+
+  await expect(page.locator('#profile-message')).toContainText(
+    'Datos personales actualizados correctamente',
+  );
 });
