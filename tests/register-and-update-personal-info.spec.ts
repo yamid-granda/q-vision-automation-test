@@ -87,8 +87,12 @@ test('register a new account', async ({ page }) => {
     page.getByRole('heading', { name: `Hola, ${UPDATED_FIRST_NAME}.` }),
   ).toBeVisible();
 
-  // AND the account menu holds the new name
-  await expect(page.locator('#header-account-menu')).toContainText(UPDATED_FIRST_NAME);
+  // AND the account menu reveals the new name on hover
+  await page.locator('#user-icon-wrap').hover();
+
+  const accountMenu = page.locator('#header-account-menu');
+  await expect(accountMenu).toBeVisible();
+  await expect(accountMenu).toContainText(UPDATED_FIRST_NAME);
 
   // AND the personal data section still shows both new values
   await expect(profileForm.locator('[data-field="first_name"]')).toHaveText(UPDATED_FIRST_NAME);
