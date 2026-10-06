@@ -23,7 +23,7 @@ npm install -g pnpm
 ## Run the tests
 
 ```bash
-pnpm test
+pnpm test tests/outlet-product-offer.spec.ts
 ```
 
 Output on success:
@@ -31,8 +31,8 @@ Output on success:
 ```
 Running 1 test using 1 worker
 
-[1/1] [chromium] › tests/home.spec.ts:3:5 › home page loads
-  1 passed (5.8s)
+[1/1] [chromium] › tests/outlet-product-offer.spec.ts:9:5 › open the first outlet product and check its offer
+  1 passed (4.5s)
 ```
 
 ## Environment variables
@@ -139,7 +139,10 @@ E2E_PROXY_SERVER=socks5://127.0.0.1:1080 pnpm test
 │   └── workflows/
 │       └── ci.yml        # typecheck + tests + commitlint
 ├── tests/
-│   └── home.spec.ts      # tests
+│   ├── outlet-product-offer.spec.ts
+│   ├── purchase-happy-path.spec.ts
+│   ├── register-and-update-personal-info.spec.ts
+│   └── utils/
 └── .gitignore
 ```
 
@@ -226,11 +229,11 @@ test('my new test', async ({ page }) => {
 Run only that file:
 
 ```bash
-pnpm run test tests/register.spec.ts
+pnpm run test tests/register-and-update-personal-info.spec.ts
 ```
 
 Run only that file with a visible browser:
 
 ```bash
-pnpm run test:headed tests/register.spec.ts
+pnpm run test:headed tests/register-and-update-personal-info.spec.ts
 ```
