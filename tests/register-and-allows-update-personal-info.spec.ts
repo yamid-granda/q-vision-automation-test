@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 import { getByName } from './utils/get-by-name';
 
-const REGISTER_FORM = 'form#form-register';
+const REGISTER_FORM = '#form-register';
 const REQUIRED_FIELDS = [
   'username',
   'first_name',
