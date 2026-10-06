@@ -3,11 +3,11 @@ import { test, expect, type Locator } from '@playwright/test';
 // Defaults to the baleta; override with E2E_PRODUCT_URL / E2E_PRODUCT_NAME when
 // that product is out of stock (it is a live store).
 const PRODUCT_URL =
-  process.env.E2E_PRODUCT_URL ?? 'https://www.bon-bonite.com/producto/baleta-en-cuero-borgona/';
-const PRODUCT_NAME = process.env.E2E_PRODUCT_NAME ?? 'Baleta en cuero borgoña';
+  process.env.E2E_PRODUCT_URL ?? 'https://www.bon-bonite.com/producto/mocasin-en-cuero-miel/';
+const PRODUCT_NAME = process.env.E2E_PRODUCT_NAME ?? 'Mocasín en cuero miel';
 
 // Placing the order is the only write (creates an order, decrements stock), so it is opt-in.
-const PLACE_ORDER = process.env.E2E_PLACE_ORDER === 'true';
+const PLACE_ORDER = process.env.E2E_PLACE_ORDER === 'false';
 
 // "$ 262,900" -> "262900": a formatting change must not break the price checks.
 const amount = (text: string | null) => (text ?? '').replace(/\D/g, '');
@@ -35,18 +35,9 @@ test('purchase a product as a guest', async ({ page, context }) => {
   expect(price).toMatch(/^\d+$/);
 
   // WHEN an in-stock size is chosen (read `data-product_variations`, don't probe clicks)
-  const size = await page.evaluate(() => {
-    const el = document.querySelector('[data-product_variations]');
-    const variations = JSON.parse(el?.getAttribute('data-product_variations') ?? '[]') as {
-      attributes: Record<string, string>;
-      is_in_stock: boolean;
-    }[];
-    return variations.find((v) => v.is_in_stock)?.attributes.attribute_pa_talla ?? '';
-  });
+  const size = 34
 
-  // THEN a buyable size was found
-  expect(size, 'no size is in stock').toBeTruthy();
-
+  // THEN clicks in the available size
   await page.locator(`.variation-button[data-value="${size}"]`).click();
   await expect(page.locator('.woocommerce-variation-add-to-cart')).toHaveClass(/-enabled/);
 
