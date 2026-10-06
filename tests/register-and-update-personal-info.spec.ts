@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 import { getByName } from './utils/get-by-name';
+import { waitForAjaxAction } from './utils/wait-for-ajax-action';
 
 const REGISTER_FORM = '#form-register';
 // Single-word: the header renders only the first word of the first name.
@@ -62,22 +63,17 @@ test('register a new account', async ({ page }) => {
   }).toPass();
 
   // AND the data is changed and saved (wait for the response: the reload below
-  // would otherwise abort the request)
+  // would otherwise abort it)
   await firstNameInput.fill(UPDATED_FIRST_NAME);
   await getByName(profileForm, 'last_name').fill(UPDATED_LAST_NAME);
   await Promise.all([
-    page.waitForResponse(
-      (res) =>
-        res.url().includes('admin-ajax.php') &&
-        (res.request().postData() ?? '').includes('action=update_custom_profile_fields'),
-    ),
+    waitForAjaxAction(page, 'update_custom_profile_fields'),
     profileForm.locator('.save-info-btn:visible').click(),
   ]);
 
-  // THEN the update is confirmed
-  await expect(page.locator('#profile-message')).toContainText(
-    'Datos personales actualizados correctamente',
-  );
+  // THEN the confirmation appears (the toast is pre-rendered in the page, so
+  // only its visibility proves the save landed)
+  await expect(page.locator('#profile-message')).toBeVisible();
 
   // WHEN the page is reloaded
   await page.reload();
