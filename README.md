@@ -35,6 +35,25 @@ Running 1 test using 1 worker
   1 passed (5.8s)
 ```
 
+## Environment variables
+
+| Variable | Effect | Default |
+| --- | --- | --- |
+| `E2E_PLACE_ORDER` | `true` places the real order in the purchase test (writes to the store) | off — stops at "Registrar Orden" |
+| `E2E_PRODUCT_URL` | Product the purchase test buys | `.../producto/baleta-en-cuero-borgona/` |
+| `E2E_PRODUCT_NAME` | Name asserted on the page and on the receipt | `Baleta en cuero borgoña` |
+| `E2E_PROXY_SERVER` | Browser-level proxy (see below) | off |
+| `E2E_PROXY_USERNAME`, `E2E_PROXY_PASSWORD` | Proxy credentials | — |
+| `E2E_PROXY_BYPASS` | Hosts that skip the proxy | `localhost,127.0.0.1` |
+
+Run the purchase test against a product that is in stock:
+
+```bash
+E2E_PRODUCT_URL=https://www.bon-bonite.com/producto/baleta-con-cordon-en-cuero-esmeralda/ \
+E2E_PRODUCT_NAME='Baleta en terciopelo verde esmeralda' \
+  pnpm test tests/purchase-happy-path.spec.ts
+```
+
 ## The site returns 403 — run through a VPN / proxy
 
 `www.bon-bonite.com` sits behind an AWS load balancer (`server: awselb/2.0`) that

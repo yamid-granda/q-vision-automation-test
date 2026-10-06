@@ -1,7 +1,10 @@
 import { test, expect, type Locator } from '@playwright/test';
 
-const PRODUCT_URL = 'https://www.bon-bonite.com/producto/baleta-en-cuero-borgona/';
-const PRODUCT_NAME = 'Baleta en cuero borgoña';
+// Defaults to the baleta; override with E2E_PRODUCT_URL / E2E_PRODUCT_NAME when
+// that product is out of stock (it is a live store).
+const PRODUCT_URL =
+  process.env.E2E_PRODUCT_URL ?? 'https://www.bon-bonite.com/producto/baleta-en-cuero-borgona/';
+const PRODUCT_NAME = process.env.E2E_PRODUCT_NAME ?? 'Baleta en cuero borgoña';
 
 // Placing the order is the only write (creates an order, decrements stock), so it is opt-in.
 const PLACE_ORDER = process.env.E2E_PLACE_ORDER === 'true';
@@ -166,7 +169,7 @@ test('purchase a product as a guest', async ({ page, context }) => {
   await expect(received).toContainText('Tu orden se registró con éxito');
   await expect(received).toContainText('Orden número');
 
-  // AND the receipt lists the baleta, size and price
+  // AND the receipt lists the product, size and price
   const receipt = page.locator('.woocommerce-order-details');
   await expect(receipt).toContainText(`${PRODUCT_NAME} - ${size}`);
   expect(await amountOf(receipt.locator('.amount').first())).toBe(price);
