@@ -82,13 +82,13 @@ test('register a new account', async ({ page }) => {
   // WHEN the page is reloaded
   await page.reload();
 
-  // AND the account menu is opened (the name lives in a hidden dropdown)
-  await page.locator('#user-icon-wrap').click();
-
-  // THEN the header shows the new name (`exact` excludes the "Hola, ..." one)
+  // THEN the hero greets the user with the new name
   await expect(
-    page.getByRole('heading', { name: UPDATED_FIRST_NAME, exact: true }),
+    page.getByRole('heading', { name: `Hola, ${UPDATED_FIRST_NAME}.` }),
   ).toBeVisible();
+
+  // AND the account menu holds the new name
+  await expect(page.locator('#header-account-menu')).toContainText(UPDATED_FIRST_NAME);
 
   // AND the personal data section still shows both new values
   await expect(profileForm.locator('[data-field="first_name"]')).toHaveText(UPDATED_FIRST_NAME);
