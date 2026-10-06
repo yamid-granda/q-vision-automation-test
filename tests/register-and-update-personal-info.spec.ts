@@ -3,6 +3,9 @@ import { test, expect } from '@playwright/test';
 import { getByName } from './utils/get-by-name';
 
 const REGISTER_FORM = '#form-register';
+// Single-word: the header renders only the first word of the first name.
+const UPDATED_FIRST_NAME = 'E2EUpdated';
+const UPDATED_LAST_NAME = 'TestUpdated';
 const REQUIRED_FIELDS = [
   'username',
   'first_name',
@@ -58,13 +61,36 @@ test('register a new account', async ({ page }) => {
     await expect(firstNameInput).toBeEditable();
   }).toPass();
 
-  // AND the data is changed and saved
-  await firstNameInput.fill('E2E Updated');
-  await getByName(profileForm, 'last_name').fill('Test Updated');
-  await profileForm.locator('.save-info-btn:visible').click();
+  // AND the data is changed and saved (wait for the response: the reload below
+  // would otherwise abort the request)
+  await firstNameInput.fill(UPDATED_FIRST_NAME);
+  await getByName(profileForm, 'last_name').fill(UPDATED_LAST_NAME);
+  await Promise.all([
+    page.waitForResponse(
+      (res) =>
+        res.url().includes('admin-ajax.php') &&
+        (res.request().postData() ?? '').includes('action=update_custom_profile_fields'),
+    ),
+    profileForm.locator('.save-info-btn:visible').click(),
+  ]);
 
   // THEN the update is confirmed
   await expect(page.locator('#profile-message')).toContainText(
     'Datos personales actualizados correctamente',
   );
+
+  // WHEN the page is reloaded
+  await page.reload();
+
+  // AND the account menu is opened (the name lives in a hidden dropdown)
+  await page.locator('#user-icon-wrap').click();
+
+  // THEN the header shows the new name (`exact` excludes the "Hola, ..." one)
+  await expect(
+    page.getByRole('heading', { name: UPDATED_FIRST_NAME, exact: true }),
+  ).toBeVisible();
+
+  // AND the personal data section still shows both new values
+  await expect(profileForm.locator('[data-field="first_name"]')).toHaveText(UPDATED_FIRST_NAME);
+  await expect(profileForm.locator('[data-field="last_name"]')).toHaveText(UPDATED_LAST_NAME);
 });
