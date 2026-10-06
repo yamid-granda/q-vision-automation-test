@@ -237,3 +237,9 @@ Run only that file with a visible browser:
 ```bash
 pnpm run test:headed tests/register-and-update-personal-info.spec.ts
 ```
+
+## Pending to Study
+
+Patterns
+page object model
+screen play
